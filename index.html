@@ -21,17 +21,41 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-3 bg-primary text-white city-search-container">
+        <div class="col-3 d-grid gap-2 bg-primary text-white city-search-container">
           <div class="add-city-search-container">
-            <h2 class="search-city-header text-start">Search for a City:</h2>
+            <div class="row p-2 input-city-header-container">
+              <h2 class="search-city-header text-start">Search for a City:</h2>
+            </div>
+            <div class="row p-2 input-city-textbox-container">
+              <input type="text" name="input-city" class="form-control" placeholder="Enter a City" />
+            </div>
+            <div
+              class="row ps-2 pe-2 pt-2 pb-3 border-bottom border-2 border-dark input-city-search-submit-container"
+            >
+              <button type="button" class="btn btn-light">Search</button>
+            </div>
           </div>
-          <div class="saved-city-container"></div>
+          <div class="saved-city-container">
+            <div class="row p-2">
+              <button class="btn btn-outline-info">Ottawa</button>
+            </div>
+            <div class="row p-2">
+              <button class="btn btn-outline-info">Montreal</button>
+            </div>
+          </div>
         </div>
-        <div class="col-9 bg-secondary text-white city-weather-container">
+        <div class="col-9 bg-light text-dark city-weather-container">
           <div class="city-current-weather-container">
-            City: Toronto
-            <div class="city-weather-stats-container"></div>
-            <div class="city-weather-5day-forcast-container"></div>
+            <div class="border border-dark city-weather-stats-container">
+              <h2 class="city-current-header">Toronto</h2>
+              <p class="temperature">Temp</p>
+              <p class="wind">Wind</p>
+              <p class="humidity">Humidity</p>
+              <p class="uv-index">UV Index</p>
+            </div>
+            <div class="city-weather-5day-forcast-container">
+              <h3 class="forcast">5-Day Forcast</h3>
+            </div>
           </div>
         </div>
       </div>
