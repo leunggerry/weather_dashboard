@@ -31,7 +31,7 @@ var cityWeatherObj = {
 
 /** Function Definitions
  *****************************************************************************/
-/** SERVER FETCH APIs Fucntions*/
+/** SERVER FETCH APIs Functions*/
 var getCurrentWeatherData = (city) => {
   var geoCoorApiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
 
@@ -85,12 +85,11 @@ var getWeatherForcastData = (city) => {
 
 /** Display Data Functions*/
 var displayWeatherData = (city, data) => {
-  //   console.log(data);
+  //console.log(data);
   // Step 1: Add the city header
-
   var cityHeaderEl = document.createElement("h2");
   cityHeaderEl.classList = "city-current-header";
-  cityHeaderEl.textContent = city + " ";
+  cityHeaderEl.textContent = city + " (" + getTheDate() + ") ";
   // Append to current weather
   CURRENT_WEATHER_CONTAINER_EL.appendChild(cityHeaderEl);
 
@@ -113,7 +112,8 @@ var displayWeatherData = (city, data) => {
   // Step 3: Add the wind speed
   var windSpeedEl = document.createElement("p");
   windSpeedEl.classList = "wind";
-  windSpeedEl.textContent = "Wind: " + data.current.wind_speed + " " + UNITS.metric.speed;
+  windSpeedEl.textContent =
+    "Wind: " + convertMetersPerSecToKMh(data.current.wind_speed) + " " + UNITS.metric.speed;
   // Append to current
   CURRENT_WEATHER_CONTAINER_EL.appendChild(windSpeedEl);
 
@@ -125,14 +125,46 @@ var displayWeatherData = (city, data) => {
   CURRENT_WEATHER_CONTAINER_EL.appendChild(humidityEl);
 
   // Step 5: Add the UV index
+  var uvIndexRatingColour;
+  var uvIndex = data.current.uvi;
+  if (uvIndex <= 2) {
+    //safe UV index
+    uvIndexRatingColour = "text-bg-success";
+  } else if (uvIndex <= 7) {
+    // moderate UV index
+    uvIndexRatingColour = "text-bg-warning";
+  } else {
+    // high UV index
+    uvIndexRatingColour = "text-bg-danger";
+  }
   var uvIndexEl = document.createElement("p");
   uvIndexEl.classList = "uvindex";
-  uvIndexEl.textContent = "UV Index: " + data.current.uvi;
+  uvIndexEl.textContent = "UV Index: ";
+  var uvSpanEl = document.createElement("span");
+  uvSpanEl.classList = "badge " + uvIndexRatingColour;
+  uvSpanEl.textContent = data.current.uvi;
+  uvIndexEl.appendChild(uvSpanEl);
   // Append to current
   CURRENT_WEATHER_CONTAINER_EL.appendChild(uvIndexEl);
+};
+
+/** Utility Functions
+ ******************************************************************************/
+var convertMetersPerSecToKMh = (speed) => {
+  return Math.round(speed * 3.6).toFixed(2);
+};
+
+var getTheDate = () => {
+  var today = new Date();
+  var day = String(today.getDate());
+  var month = String(today.getMonth() + 1); // Jan is 0
+  var year = today.getFullYear();
+
+  today = day + "/" + month + "/" + year;
+  return today;
 };
 
 /** Main Program
  ******************************************************************************/
 getCurrentWeatherData("Toronto");
-//getWeatherForcastData("Toronto");
+getWeatherForcastData("Toronto");
