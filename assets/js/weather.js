@@ -1,7 +1,7 @@
 /** Global Constants
  ******************************************************************************/
 const CURRENT_WEATHER_CONTAINER_EL = document.querySelector(".city-weather-stats-container");
-const FORECAST_WEATHER_CONTAINER_EL = document.querySelector(".city-weather-5day-forcast-container");
+const FORECAST_WEATHER_CONTAINER_EL = document.querySelector(".daily-forecast-container");
 
 const CELSIUS = "C";
 const FAHREHEIT = "H";
@@ -75,8 +75,12 @@ var getWeatherForcastData = (city) => {
   fetch(weatherForcastsApiUrl)
     .then(function (response) {
       if (response.ok) {
-        console.log(response.json());
+        //console.log(response.json());
+        return response.json();
       }
+    })
+    .then(function (data) {
+      displayWeatherForcast(data);
     })
     .catch(function (error) {
       alert("Unable to connect to Open Weather: " + error);
@@ -148,12 +152,74 @@ var displayWeatherData = (city, data) => {
   CURRENT_WEATHER_CONTAINER_EL.appendChild(uvIndexEl);
 };
 
+var displayWeatherForcast = (data) => {
+  console.log(data);
+  //from the data set get 5 results
+  // results for a day are every 3 hour intervals
+  for (let i = 0; i < data.list.length; i += 8) {
+    let dayForcast = data.list[i];
+    // console.log("day " + i + " " + dayForcast.main.temp);
+    // console.log("day " + i + " " + dayForcast.wind.speed);
+    // console.log("day " + i + " " + dayForcast.main.humidity);
+    createForcastElement(dayForcast);
+  }
+};
+
+var createForcastElement = (day) => {
+  //create container for the forcast
+  var dayForecastContainerEl = document.createElement("div");
+  dayForecastContainerEl.classList = "col p-3";
+  FORECAST_WEATHER_CONTAINER_EL.appendChild(dayForecastContainerEl);
+
+  // Step 1: append the date
+  var dateEl = document.createElement("div");
+  dateEl.classList = "p-1";
+  dateEl.textContent = getTheDateParam(day.dt_txt);
+
+  dayForecastContainerEl.appendChild(dateEl);
+
+  // Step 2: append the icon
+  var weatherIconEl = document.createElement("img");
+  weatherIconEl.setAttribute(
+    "src",
+    "http://openweathermap.org/img/w/" + day.weather[0].icon + ".png"
+  );
+  weatherIconEl.setAttribute("alt", day.weather[0].description);
+  dayForecastContainerEl.appendChild(weatherIconEl);
+
+  // Step 3: append the temp
+  var tempEl = document.createElement("div");
+  tempEl.classList = "p-1";
+  tempEl.textContent = "Temp: " + day.main.temp + "\xb0" + UNITS.metric.temp;
+
+  dayForecastContainerEl.appendChild(tempEl);
+
+  // Step 4: append the wind
+  var windEl = document.createElement("div");
+  windEl.classList = "p-1";
+  windEl.textContent = "Wind: " + day.wind.speed + UNITS.metric.speed;
+
+  dayForecastContainerEl.appendChild(windEl);
+  // Step 5: append the humidity
+  var humidityEl = document.createElement("div");
+  humidityEl.classList = "p-1";
+  humidityEl.textContent = "Humidity: " + day.main.humidity + " %";
+
+  dayForecastContainerEl.appendChild(humidityEl);
+};
 /** Utility Functions
  ******************************************************************************/
 var convertMetersPerSecToKMh = (speed) => {
   return Math.round(speed * 3.6).toFixed(2);
 };
 
+var getTheDateParam = (date) => {
+  var [day, time] = date.split(" ");
+  day = day.replaceAll("-", "/");
+  console.log(day);
+
+  return day;
+};
 var getTheDate = () => {
   var today = new Date();
   var day = String(today.getDate());
