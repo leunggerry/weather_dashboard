@@ -5,24 +5,80 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
-    <header>
-      <h1>Weather Dashboard</h1>
-    </header>
-    <nav>
-        <div class="city-search-container"></div>
-        <div class="saved-city-container"></div>
-    </nav>
-    <main>
-      <div class="city-weather-container">
-        <div class="city-weather-current-weather-container"></div>
-        <div class="city-weather-5day-forcast-container"></div>
+    <header class="container-md text-center">
+      <div class="row">
+        <h1 class="col">Weather Dashboard</h1>
       </div>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/script.js"></script>
+    </header>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-3 d-grid gap-2 bg-primary text-white city-search-container">
+          <div class="add-city-search-container">
+            <div class="row p-2 input-city-header-container">
+              <h2 class="search-city-header text-start">Search for a City:</h2>
+            </div>
+            <div class="row p-2 input-city-textbox-container">
+              <input
+                type="text"
+                name="input-city"
+                class="form-control"
+                id="input-city"
+                placeholder="Enter a City"
+              />
+            </div>
+            <div
+              class="row ps-2 pe-2 pt-2 pb-3 border-bottom border-2 border-dark input-city-search-submit-container"
+            >
+              <button type="button" class="btn btn-light" id="search-input-city-btn">Search</button>
+            </div>
+          </div>
+          <!-- container for previously searched cities -->
+          <div class="saved-city-container">
+            <div class="row p-2">
+              <button class="btn btn-outline-info">Ottawa</button>
+            </div>
+            <div class="row p-2">
+              <button class="btn btn-outline-info">Montreal</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-9 bg-light text-dark city-weather-container">
+          <div class="city-current-weather-container">
+            <!-- Container for current weather -->
+            <div class="border border-dark city-weather-stats-container">
+              <!-- <h2 class="city-current-header">
+                Toronto <img src="http://openweathermap.org/img/w/02d.png" alt="" srcset="" />
+              </h2>
+              <p class="temperature">Temp</p>
+              <p class="wind">Wind</p>
+              <p class="humidity">Humidity</p>
+              <p class="uv-index">UV Index</p> -->
+            </div>
+            <!-- Container for 5-day weather forcast -->
+            <div class="city-weather-5day-forcast-container">
+              <h3 class="forcast row">5-Day Forcast:</h3>
+              <div class="daily-forecast-container row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./assets/js/config.js"></script>
+    <script src="./assets/js/weather.js"></script>
   </body>
 </html>
