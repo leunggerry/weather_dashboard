@@ -209,6 +209,17 @@ var createForcastElement = (day) => {
 };
 /** Utility Functions
  ******************************************************************************/
+var clearWeatherData = () => {
+  // remove children of the current weather
+  while (CURRENT_WEATHER_CONTAINER_EL.firstChild) {
+    CURRENT_WEATHER_CONTAINER_EL.removeChild(CURRENT_WEATHER_CONTAINER_EL.firstChild);
+  }
+
+  // remove childe of the forcast
+  while (FORECAST_WEATHER_CONTAINER_EL.firstChild) {
+    FORECAST_WEATHER_CONTAINER_EL.removeChild(FORECAST_WEATHER_CONTAINER_EL.firstChild);
+  }
+};
 var convertMetersPerSecToKMh = (speed) => {
   return Math.round(speed * 3.6).toFixed(2);
 };
@@ -230,7 +241,30 @@ var getTheDate = () => {
   return today;
 };
 
+var validCity = (city) => {
+  if (!city) {
+    alert("Please enter a valid city");
+    return false;
+  }
+  return true;
+};
+
 /** Main Program
  ******************************************************************************/
-getCurrentWeatherData("Toronto");
-getWeatherForcastData("Toronto");
+var searchCityButton = $("#search-input-city-btn");
+
+searchCityButton.click(function () {
+  //get input
+  var cityInputEl = $("#input-city").val();
+  if (!validCity(cityInputEl)) {
+    //not valid city return function
+    return;
+  } else {
+    // clear any old weather data
+    clearWeatherData();
+    // valid city return the current weather and forecasts
+    getCurrentWeatherData(cityInputEl);
+    getWeatherForcastData(cityInputEl);
+  }
+  console.log(cityInputEl);
+});
