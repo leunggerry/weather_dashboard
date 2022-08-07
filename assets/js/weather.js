@@ -2,6 +2,7 @@
  ******************************************************************************/
 const CURRENT_WEATHER_CONTAINER_EL = document.querySelector(".city-weather-stats-container");
 const FORECAST_WEATHER_CONTAINER_EL = document.querySelector(".daily-forecast-container");
+const SAVED_CITIES_CONTAINER_EL = document.querySelector(".saved-city-container");
 
 const CELSIUS = "C";
 const FAHREHEIT = "H";
@@ -29,37 +30,32 @@ var cityWeatherObj = {
   forcast: [],
 };
 
+var savedCities = [];
+
 /** Function Definitions
  *****************************************************************************/
 /** SERVER FETCH APIs Functions*/
 var getCurrentWeatherData = (city) => {
   var geoCoorApiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
 
-  console.log("getting coordinates");
   //request for the geo coordinates for the city
   fetch(geoCoorApiUrl)
     .then(function (response) {
       if (response.ok) {
-        // console.log(response.json());
         return response.json();
       }
     })
     .then(function (geoCoor) {
       var weatherApiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${geoCoor[0].lat}&lon=${geoCoor[0].lon}&appid=${apiKey}&units=metric&exclude=daily,hourly,minutely`;
-      console.log("getting current weather from " + city);
 
       // request for the weather for the city
       fetch(weatherApiUrl)
         .then(function (response) {
           if (response.ok) {
-            // console.log(response.json());
             return response.json();
           }
         })
         .then(function (data) {
-          //   console.log(city);
-          //   console.log(data.current.weather[0]);
-          //   console.log(data.current.wind);
           displayWeatherData(city, data);
         })
         .catch(function (error) {
@@ -71,11 +67,9 @@ var getCurrentWeatherData = (city) => {
 var getWeatherForcastData = (city) => {
   var weatherForcastsApiUrl = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
 
-  console.log("getting forcasts from " + city);
   fetch(weatherForcastsApiUrl)
     .then(function (response) {
       if (response.ok) {
-        //console.log(response.json());
         return response.json();
       }
     })
@@ -87,9 +81,13 @@ var getWeatherForcastData = (city) => {
     });
 };
 
+//Wrapper for functions above
+var getCityWeather = (event) => {
+  console.log(event.target.id);
+};
+
 /** Display Data Functions*/
 var displayWeatherData = (city, data) => {
-  //console.log(data);
   // Step 1: Add the city header
   var cityHeaderEl = document.createElement("h2");
   cityHeaderEl.classList = "city-current-header";
@@ -153,14 +151,11 @@ var displayWeatherData = (city, data) => {
 };
 
 var displayWeatherForcast = (data) => {
-  console.log(data);
   //from the data set get 5 results
   // results for a day are every 3 hour intervals
   for (let i = 0; i < data.list.length; i += 8) {
     let dayForcast = data.list[i];
-    // console.log("day " + i + " " + dayForcast.main.temp);
-    // console.log("day " + i + " " + dayForcast.wind.speed);
-    // console.log("day " + i + " " + dayForcast.main.humidity);
+
     createForcastElement(dayForcast);
   }
 };
@@ -207,6 +202,23 @@ var createForcastElement = (day) => {
 
   dayForecastContainerEl.appendChild(humidityEl);
 };
+
+var createCityButton = (city) => {
+  var cityButtonContainerEl = document.createElement("div");
+  cityButtonContainerEl.classList = "row p-2";
+
+  SAVED_CITIES_CONTAINER_EL.appendChild(cityButtonContainerEl);
+
+  var cityButtonEl = document.createElement("button");
+  cityButtonEl.id = city + "-btn";
+  cityButtonEl.classList = "btn btn-outline-info";
+  cityButtonEl.textContent = city;
+
+  cityButtonContainerEl.appendChild(cityButtonEl);
+
+  // add event listener
+  document.querySelector("#" + city + "-btn").addEventListener("click", getCityWeather);
+};
 /** Utility Functions
  ******************************************************************************/
 var clearWeatherData = () => {
@@ -227,7 +239,7 @@ var convertMetersPerSecToKMh = (speed) => {
 var getTheDateParam = (date) => {
   var [day, time] = date.split(" ");
   day = day.replaceAll("-", "/");
-  console.log(day);
+  // console.log(day);
 
   return day;
 };
@@ -249,22 +261,59 @@ var validCity = (city) => {
   return true;
 };
 
+var getStoredCities = () => {
+  tempCities = JSON.parse(localStorage.getItem("savedCities"));
+
+  if (!tempCities) {
+    return [];
+  }
+  return tempCities;
+};
+var saveCity = (city) => {
+  //check if button is already created
+  if ($("#" + city + "-btn").length) {
+    console.log("city button already exists");
+  }
+  //if it doesnt exist create the button and add it to location storage
+  else {
+    savedCities = getStoredCities();
+    console.log(savedCities);
+
+    //check if city is already in storage
+    if (!savedCities.includes(city)) {
+      //update localStorage
+      savedCities.push(city);
+      localStorage.setItem("savedCities", JSON.stringify(savedCities));
+
+      //show button of saved city
+      createCityButton(city);
+    }
+  }
+};
+
+var loadPreviouslySearchedCities = () => {
+  savedCities = getStoredCities();
+
+  savedCities.forEach((city) => createCityButton(city));
+};
 /** Main Program
  ******************************************************************************/
+loadPreviouslySearchedCities();
+
 var searchCityButton = $("#search-input-city-btn");
 
 searchCityButton.click(function () {
   //get input
-  var cityInputEl = $("#input-city").val();
-  if (!validCity(cityInputEl)) {
+  var cityInput = $("#input-city").val();
+  if (!validCity(cityInput)) {
     //not valid city return function
     return;
   } else {
     // clear any old weather data
     clearWeatherData();
     // valid city return the current weather and forecasts
-    getCurrentWeatherData(cityInputEl);
-    getWeatherForcastData(cityInputEl);
+    getCurrentWeatherData(cityInput);
+    getWeatherForcastData(cityInput);
+    saveCity(cityInput);
   }
-  console.log(cityInputEl);
 });
