@@ -83,7 +83,12 @@ var getWeatherForcastData = (city) => {
 
 //Wrapper for functions above
 var getCityWeather = (event) => {
-  console.log(event.target.id);
+  var [city, ...element] = event.target.id.split("-");
+  console.log(city);
+  clearWeatherData();
+  // valid city return the current weather and forecasts
+  getCurrentWeatherData(city);
+  getWeatherForcastData(city);
 };
 
 /** Display Data Functions*/
