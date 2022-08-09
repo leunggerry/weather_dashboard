@@ -18,7 +18,7 @@ const UNITS = {
 };
 /** Global Variables
  ******************************************************************************/
-var apiKey = config.SECRET_API_KEY;
+var apiKey = "be900a7d1a9717e86c88af36ef98247c";
 var currentWeatherObj = {
   temperature: 0,
   wind: 0,
