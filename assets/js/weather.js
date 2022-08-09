@@ -36,7 +36,7 @@ var savedCities = [];
  *****************************************************************************/
 /** SERVER FETCH APIs Functions*/
 var getCurrentWeatherData = (city) => {
-  var geoCoorApiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+  var geoCoorApiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
 
   //request for the geo coordinates for the city
   fetch(geoCoorApiUrl)
@@ -65,7 +65,7 @@ var getCurrentWeatherData = (city) => {
 };
 
 var getWeatherForcastData = (city) => {
-  var weatherForcastsApiUrl = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+  var weatherForcastsApiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
 
   fetch(weatherForcastsApiUrl)
     .then(function (response) {
@@ -104,7 +104,7 @@ var displayWeatherData = (city, data) => {
   var weatherIconEl = document.createElement("img");
   weatherIconEl.setAttribute(
     "src",
-    "http://openweathermap.org/img/w/" + data.current.weather[0].icon + ".png"
+    "https://openweathermap.org/img/w/" + data.current.weather[0].icon + ".png"
   );
   weatherIconEl.setAttribute("alt", data.current.weather[0].description);
   cityHeaderEl.appendChild(weatherIconEl);
@@ -182,7 +182,7 @@ var createForcastElement = (day) => {
   var weatherIconEl = document.createElement("img");
   weatherIconEl.setAttribute(
     "src",
-    "http://openweathermap.org/img/w/" + day.weather[0].icon + ".png"
+    "https://openweathermap.org/img/w/" + day.weather[0].icon + ".png"
   );
   weatherIconEl.setAttribute("alt", day.weather[0].description);
   dayForecastContainerEl.appendChild(weatherIconEl);
